@@ -5,6 +5,7 @@ __pycache__/
 bin/
 share/
 include/
+.idea/
 
 # C extensions
 *.so
