@@ -7,11 +7,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 class VectorTfidf:
     def __init__(self):
         config = configparser.ConfigParser()
-        config.read('./config.cfg')
+        config.read('../config.cfg')
         self.train_df = pd.read_csv(config['FILES']['TRAIN'])
         self.test_df = pd.read_csv(config['FILES']['TEST'])
-        self.test_label = pd.read_csv(config['FILES']['LABEL'])
-        self.cols_name = ['obscene', 'insult', 'toxic', 'severe_toxic', 'identity_hate', 'threat']
 
     @staticmethod
     def clean_text(text):
@@ -35,4 +33,5 @@ class VectorTfidf:
         x_train_tfid = vect.fit_transform(x_train)
         # transform the test data using the earlier fitted vocabulary, into a document-term matrix
         x_test_tfid = vect.transform(x_test)
+        # return xa, xt, ya, yt
         return x_train_tfid, x_test_tfid
