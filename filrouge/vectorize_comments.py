@@ -33,5 +33,5 @@ class VectorTfidf:
         x_train_tfid = vect.fit_transform(x_train)
         # transform the test data using the earlier fitted vocabulary, into a document-term matrix
         x_test_tfid = vect.transform(x_test)
-        # return xa, xt, ya, yt
+        # return xa, xt
         return x_train_tfid, x_test_tfid
