@@ -1,12 +1,12 @@
 import configparser
 import pandas as pd
-import itertools
 import matplotlib.pyplot as plt
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras.optimizers import SGD,  Adam
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from filrouge.vectorize_comments import VectorTfidf
+from filrouge.multilabel_to_multiclass import Multiclass
 
 
 class NeuralNetwork:
@@ -15,37 +15,10 @@ class NeuralNetwork:
         config.read('../config.cfg')
         self.train_df = pd.read_csv(config['FILES']['TRAIN'])
         self.test_df = pd.read_csv(config['FILES']['TEST'])
-        self.cols_name = ['obscene', 'insult', 'toxic', 'severe_toxic', 'identity_hate', 'threat']
         self.test_label = pd.read_csv(config['FILES']['LABEL'])
-        vect = VectorTfidf()
-        self.train_vect, self.test_vect = vect.vectorize()
+        # vect = VectorTfidf()
+        # self.train_vect, self.test_vect = vect.vectorize()
         # print(self.train_vect.shape, self.test_vect.shape)
-
-    def transform_label(self, df)->list:
-        """
-
-        :param df: dataframe containing multi labels
-        :return: new label vector with classes representing combination of labels
-        """
-        results = [str(classe) for classe in range(1, len(self.cols_name) + 1)]
-        classes = [str(classe) for classe in range(1, len(self.cols_name) + 1)]
-        ynew = []
-        for x in range(2, len(self.cols_name) + 1):
-            results.extend([''.join(comb) for comb in itertools.combinations(classes, x)])
-        sample_size = df.shape[0]
-        for sample in range(0, sample_size):
-            y = ''
-            for idx, label in enumerate(self.cols_name):
-                if df[label][sample] != 0:
-                    y = ''.join([y, str(idx + 1)])
-            if y:
-                ynew.append(y)
-            else:
-                ynew.append('0')
-        print(len(ynew))
-        for classe in results:
-            print('On a {} commentaires dans la classe {}'.format(ynew.count(classe), classe))
-        return ynew
 
     def create_model(self, ya, yt, epochs, batch_size):
         model = Sequential()
@@ -80,9 +53,10 @@ class NeuralNetwork:
         print("Taux classif (test): %.3f" % score_test[1])
 
     def main(self):
-        labels_train = self.transform_label(self.train_df)
-        labels_test = self.transform_label(self.test_label)
-        self.create_model(labels_train, labels_test, 20, 32)
+        label_change = Multiclass()
+        labels_train = label_change.transform_label(self.train_df)
+        labels_test = label_change.transform_label(self.test_label)
+        # self.create_model(labels_train, labels_test, 20, 32)
 
 
 if __name__ == '__main__':
