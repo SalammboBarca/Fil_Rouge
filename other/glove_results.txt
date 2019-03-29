@@ -1,0 +1,49 @@
+$ build/vocab_count -min-count 45 -verbose 2 < custom_corpus > vocab.txt
+BUILDING VOCABULARY
+Processed 19477680 tokens.
+Counted 539021 unique words.
+Truncating vocabulary at min count 45.
+Using vocabulary of size 15342.
+
+$ build/cooccur -memory 4.0 -vocab-file vocab.txt -verbose 2 -window-size 15 < custom_corpus > cooccurrence.bin
+COUNTING COOCCURRENCES
+window size: 15
+context: symmetric
+max product: 13752509
+overflow length: 38028356
+Reading vocab from file "vocab.txt"...loaded 15342 words.
+Building lookup table...table contains 52794727 elements.
+Processed 19477680 tokens.
+Writing cooccurrences to disk........2 files in total.
+Merging cooccurrence files: processed 30592505 lines.
+
+$ build/shuffle -memory 4.0 -verbose 2 < cooccurrence.bin > cooccurrence.shuf.bin
+SHUFFLING COOCCURRENCES
+array size: 255013683
+Shuffling by chunks: processed 30592505 lines.
+Wrote 1 temporary file(s).
+Merging temp files: processed 30592505 lines.
+
+$ build/glove -save-file vectors -threads 8 -input-file cooccurrence.shuf.bin -x-max 10 -iter 15 -vector-size 50 -binary 2 -vocab-file vocab.txt -verbose 2
+TRAINING MODEL
+Read 30592505 lines.
+Initializing parameters...done.
+vector size: 50
+vocab size: 15342
+x_max: 10.000000
+alpha: 0.750000
+03/26/19 - 09:47.34AM, iter: 001, cost: 0.072271
+03/26/19 - 09:47.38AM, iter: 002, cost: 0.054560
+03/26/19 - 09:47.42AM, iter: 003, cost: 0.048178
+03/26/19 - 09:47.46AM, iter: 004, cost: 0.044892
+03/26/19 - 09:47.51AM, iter: 005, cost: 0.043190
+03/26/19 - 09:47.55AM, iter: 006, cost: 0.042215
+03/26/19 - 09:48.00AM, iter: 007, cost: 0.041604
+03/26/19 - 09:48.05AM, iter: 008, cost: 0.041160
+03/26/19 - 09:48.09AM, iter: 009, cost: 0.040826
+03/26/19 - 09:48.14AM, iter: 010, cost: 0.040581
+03/26/19 - 09:48.18AM, iter: 011, cost: 0.040384
+03/26/19 - 09:48.22AM, iter: 012, cost: 0.040229
+03/26/19 - 09:48.27AM, iter: 013, cost: 0.040092
+03/26/19 - 09:48.31AM, iter: 014, cost: 0.039980
+03/26/19 - 09:48.35AM, iter: 015, cost: 0.039882
