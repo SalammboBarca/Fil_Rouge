@@ -1,5 +1,5 @@
 [FILES]
-TRAIN:"/Users/cherifabass/Documents/INSA/all/train.csv"
-TEST:"/Users/cherifabass/Documents/INSA/all/test.csv"
+TRAIN:
+TEST:
 LABEL:
 SUBMIT:
